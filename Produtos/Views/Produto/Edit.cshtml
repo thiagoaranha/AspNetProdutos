@@ -1,0 +1,76 @@
+﻿@model DAO.Entities.Produto
+
+@{
+    ViewBag.Title = "Produto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<SelectListItem> categorias = new List<SelectListItem>() { 
+        new SelectListItem { Text = "Bebidas", Value = "Bebidas" },
+        new SelectListItem { Text = "Farmácia", Value = "Farmácia" },
+        new SelectListItem { Text = "Laticínios", Value = "Laticínios" },
+        new SelectListItem { Text = "Limpeza", Value = "Limpeza" },
+        new SelectListItem { Text = "Padaria", Value = "Padaria" }
+    };
+
+    var Id = Model.Id;
+}
+
+<h2>@ViewBag.Title</h2>
+<hr />
+<div class="row text-center">
+    <span class="text-warning">@ViewBag.Message</span>
+</div>
+<div class="row">
+
+    @using (Html.BeginForm("Update", "Produto", FormMethod.Post))
+    {
+        <div class="col-md-6">
+            @Html.HiddenFor(model => model.Id)
+            <div class="form-group">
+                @Html.LabelFor(model => model.Nome)
+                @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Categoria)
+                @Html.DropDownListFor(model => model.Categoria, categorias, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Categoria, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Preco) <b>R$</b>
+                @Html.TextBoxFor(model => model.Preco, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Preco, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Atualizar</button>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">
+                    Excluir
+                </button>
+                @Html.ActionLink("Voltar", "Index", new { }, new { @class = "btn btn-default" })
+                
+            </div>
+        </div>
+    }
+
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">Alerta</h4>
+            </div>
+            <div class="modal-body">
+                Deseja realmente excluir o produto?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                @Html.ActionLink("Confirmar", "Delete", new { id = Id }, new { @class = "btn btn-danger" })
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

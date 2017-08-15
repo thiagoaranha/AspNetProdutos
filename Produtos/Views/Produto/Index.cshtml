@@ -1,0 +1,79 @@
+﻿@model PagedList.IPagedList<DAO.Entities.Produto>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Produtos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewBag.Title</h1>
+<hr />
+<div class="row">
+    <span class="warning">@ViewBag.Message</span>
+</div>
+<!--Filtro-->
+<div class="row">
+    <div class="col-md-6">
+        <div class="">
+            <div>
+                <input type="button" value="Adicionar Produto" class="btn btn-sm btn-default" onclick="location.href='@Url.Action("Add", "Produto")'" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-inline" style="float:right;">
+            @using (Html.BeginForm("Index", "Produto", FormMethod.Post))
+            {
+                <p>
+                    Busca: @Html.TextBox("busca", ViewBag.FiltroAtual as string, new { @class = "form-control", @placeholder = "Nome" })
+                    <button type="submit" class="btn btn-primary">Ok</button>
+                </p>
+            }
+        </div>
+    </div>
+    <!--./Filtro-->
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (Model.Count() > 0)
+        {
+            <table class="table table-hover table-bordered">
+                <tr>
+                    <th>Data de Cadastro</th>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Preço R$</th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr onclick="location.href='@Url.Action("Edit", "Produto", new { id = item.Id })'" style="cursor:pointer">
+                        <td>@Html.DisplayFor(modelItem => item.DataDeCadastro)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Categoria)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Preco)</td>
+                    </tr>
+                }
+
+            </table>
+        }
+        else
+        {
+            <span>Não há nenhum produto cadastrado.</span>
+        }
+    </div>
+</div>
+
+@if (Model.PageCount > 0)
+{
+    <!--Paginação-->
+    <div class="row">
+        <div class="col-lg-12 page-header">
+            Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+            @Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina, filtroAtual = ViewBag.FiltroAtual }))
+        </div>
+    </div>
+}
+
+
